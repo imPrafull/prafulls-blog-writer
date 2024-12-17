@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Pen } from 'lucide-react';
+import { Pen, AlertCircle } from 'lucide-react';
 
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -18,18 +18,26 @@ const formSchema = z.object({
 
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
-    resolver: zodResolver(formSchema)
+  
+  const form = useForm<LoginFormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   });
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
+    setError(null);
+    
     try {
       await auth.login(data.email, data.password);
       navigate('/dashboard');
-    } catch (error) {
-      alert('Invalid credentials');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -45,20 +53,29 @@ export function LoginForm() {
           </div>
         </div>
         
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <FormField label="Email" error={errors.email?.message}>
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md flex items-center gap-2 text-red-600">
+            <AlertCircle className="h-4 w-4" />
+            <span className="text-sm">{error}</span>
+          </div>
+        )}
+        
+        <Form onSubmit={form.handleSubmit(onSubmit)}>
+          <FormField label="Email" error={form.formState.errors.email?.message}>
             <Input
               type="email"
               placeholder="Enter your email"
-              {...register('email')}
+              {...form.register('email')}
+              disabled={isLoading}
             />
           </FormField>
           
-          <FormField label="Password" error={errors.password?.message}>
+          <FormField label="Password" error={form.formState.errors.password?.message}>
             <Input
               type="password"
               placeholder="Enter your password"
-              {...register('password')}
+              {...form.register('password')}
+              disabled={isLoading}
             />
           </FormField>
 

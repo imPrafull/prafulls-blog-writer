@@ -2,12 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { NewPostPage } from './pages/NewPostPage';
-import { auth } from './lib/auth';
-
-function PrivateRoute({ children }: { children: React.ReactNode }) {
-  const user = auth.getUser();
-  return user ? <>{children}</> : <Navigate to="/login" />;
-}
+import { AuthGuard } from './components/auth/AuthGuard';
 
 function App() {
   return (
@@ -17,17 +12,17 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <PrivateRoute>
+            <AuthGuard>
               <DashboardPage />
-            </PrivateRoute>
+            </AuthGuard>
           }
         />
         <Route
           path="/dashboard/new"
           element={
-            <PrivateRoute>
+            <AuthGuard>
               <NewPostPage />
-            </PrivateRoute>
+            </AuthGuard>
           }
         />
         <Route path="*" element={<Navigate to="/dashboard" />} />

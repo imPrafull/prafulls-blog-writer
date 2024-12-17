@@ -1,5 +1,5 @@
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { BlogEditor } from '@/components/blog/BlogEditor';
+import { BlogEditorForm } from '@/components/blog/BlogEditorForm';
 
 export function NewPostPage() {
   return (
@@ -9,7 +9,7 @@ export function NewPostPage() {
           <h1>New Blog Post</h1>
         </div>
         <div className="card-content">
-          <BlogEditor />
+          <BlogEditorForm />
         </div>
       </div>
     </DashboardLayout>
