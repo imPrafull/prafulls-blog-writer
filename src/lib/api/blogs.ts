@@ -2,7 +2,7 @@ import { auth } from '../auth';
 import type { BlogPost } from '@/types/blog';
 
 export async function createBlogPost(title: string, content: string): Promise<BlogPost> {
-  const response = await fetch('/blogs', {
+  const response = await fetch('http://localhost:3000/blogs', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
